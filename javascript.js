@@ -54,4 +54,30 @@ function playRound()
             return `You lose! ${computerChoice} beats ${playerChoice}`;
     }
 }
-alert(playRound());
+
+function game()
+{
+    // player score, computer score
+    let playerScore = 0;
+    let computerScore = 0;
+    for (let i = 0; i < 5; i++)
+    {
+        result = playRound();
+        alert(result);
+
+        // deconstruct string to prove winner
+        switch(result.split(' ')[1])
+        {
+            case 'a':
+                break;
+            case 'win!':
+                playerScore++;
+                break;
+            case 'lose!':
+                computerScore++;
+                break;
+        }
+    }
+    alert(`Player score: ${playerScore}\nComputer score: ${computerScore}`);
+}
+game();
