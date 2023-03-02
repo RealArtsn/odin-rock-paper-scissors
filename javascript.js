@@ -1,5 +1,3 @@
-console.log('hello world');
-
 // randomly return rock, paper, or scissors
 function getComputerChoice() 
 {
@@ -9,4 +7,11 @@ function getComputerChoice()
     return choices[idx];
 }
 
-console.log(getComputerChoice())
+// prompt player for rock paper scissors choice and return choice
+function getPlayerChoice()
+{
+    let message = 'What is your choice? (rock|paper|scissors)';
+    return prompt(message).toLowerCase();
+}
+
+console.log(getPlayerChoice())
