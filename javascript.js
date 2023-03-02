@@ -15,7 +15,7 @@ function getPlayerChoice()
 }
 
 // return 0 if player wins, 1 if computer wins, -1 if tie
-function findWinner(playerChoice, computerChoice)
+function playRound(playerChoice, computerChoice)
 {
     // tie
     if (playerChoice === computerChoice)
@@ -37,17 +37,12 @@ function findWinner(playerChoice, computerChoice)
     }
 }
 
-// play a round of rock paper scissors and return true if player won
-function playRound() 
+function describeResult(playerChoice, computerChoice, result)
 {
-    // get player and computer choice
-    let computerChoice = getComputerChoice();
-    let playerChoice = getPlayerChoice();
-    // return string based on winner
-    switch(findWinner(playerChoice, computerChoice))
+    switch(result)
     {
         case -1:
-            return `It's a tie! ${playerChoice} vs ${computerChoice}`;
+            return `It's a tie! ${playerChoice} and ${computerChoice}`;
         case 0:
             return `You win! ${playerChoice} beats ${computerChoice}`;
         case 1:
@@ -55,25 +50,28 @@ function playRound()
     }
 }
 
+// game loop through 5
 function game()
 {
+    const TOTALROUNDS = 5;
     // player score, computer score
     let playerScore = 0;
     let computerScore = 0;
-    for (let i = 0; i < 5; i++)
+    for (let i = 0; i < TOTALROUNDS; i++)
     {
-        result = playRound();
-        alert(result);
-
+        let playerChoice = getPlayerChoice();
+        let computerChoice = getComputerChoice()
+        result = playRound(playerChoice, computerChoice);
+        alert(describeResult(playerChoice, computerChoice, result));
         // deconstruct string to prove winner
-        switch(result.split(' ')[1])
+        switch(result)
         {
-            case 'a':
+            case -1:
                 break;
-            case 'win!':
+            case 0:
                 playerScore++;
                 break;
-            case 'lose!':
+            case 1:
                 computerScore++;
                 break;
         }
