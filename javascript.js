@@ -37,6 +37,7 @@ function playRound(playerChoice, computerChoice)
     }
 }
 
+// Return string describing outcome from result integer input
 function describeResult(playerChoice, computerChoice, result)
 {
     switch(result)
@@ -53,17 +54,21 @@ function describeResult(playerChoice, computerChoice, result)
 // game loop through 5
 function game()
 {
+    // total rounds to be played
     const TOTALROUNDS = 5;
-    // player score, computer score
+    // initialize player score, computer score
     let playerScore = 0;
     let computerScore = 0;
     for (let i = 0; i < TOTALROUNDS; i++)
     {
+        // get player and computer choice
         let playerChoice = getPlayerChoice();
-        let computerChoice = getComputerChoice()
+        let computerChoice = getComputerChoice();
+        // play a round
         result = playRound(playerChoice, computerChoice);
+        // alert player of round result
         alert(describeResult(playerChoice, computerChoice, result));
-        // deconstruct string to prove winner
+        // update scores from round result
         switch(result)
         {
             case -1:
@@ -76,6 +81,7 @@ function game()
                 break;
         }
     }
+    // report final scores
     alert(`Player score: ${playerScore}\nComputer score: ${computerScore}`);
 }
 game();
