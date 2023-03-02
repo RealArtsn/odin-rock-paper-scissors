@@ -10,8 +10,15 @@ function getComputerChoice()
 // prompt player for rock paper scissors choice and return choice
 function getPlayerChoice()
 {
-    let message = 'What is your choice? (rock|paper|scissors)';
-    return prompt(message).toLowerCase();
+    let choice;
+    // prompt until valid response
+    do 
+    {
+        let message = 'What is your choice? (rock|paper|scissors)';
+        choice = prompt(message).toLowerCase();
+    }
+    while (!['rock','paper','scissors'].includes(choice));
+    return choice;
 }
 
 // return 0 if player wins, 1 if computer wins, -1 if tie
