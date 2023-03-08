@@ -1,3 +1,7 @@
+// initialize scores [player, computer]
+const scoreArray = [0,0];
+const MAXSCORE = 5;
+
 // randomly return rock, paper, or scissors
 function getComputerChoice() 
 {
@@ -7,19 +11,6 @@ function getComputerChoice()
     return choices[idx];
 }
 
-// prompt player for rock paper scissors choice and return choice
-function getPlayerChoice()
-{
-    let choice;
-    // prompt until valid response
-    do 
-    {
-        let message = 'What is your choice? (rock|paper|scissors)';
-        choice = prompt(message).toLowerCase();
-    }
-    while (!['rock','paper','scissors'].includes(choice));
-    return choice;
-}
 
 // return 0 if player wins, 1 if computer wins, -1 if tie
 function playRound(playerChoice, computerChoice)
@@ -32,62 +23,90 @@ function playRound(playerChoice, computerChoice)
     // find winner
     if (computerChoice === 'rock')
     {
-        return (playerChoice === 'paper') ? 0 : 1;
+        return (playerChoice === 'paper') ? 1 : -1;
     }
     if (computerChoice === 'paper')
     {
-        return (playerChoice === 'scissors') ? 0 : 1;
+        return (playerChoice === 'scissors') ? 1 : -1;
     }
     if (computerChoice === 'scissors')
     {
-        return (playerChoice === 'rock') ? 0 : 1;
+        return (playerChoice === 'rock') ? 1 : -1;
     }
 }
 
 // Return string describing outcome from result integer input
-function describeResult(playerChoice, computerChoice, result)
+function describeRoundResult(playerChoice, computerChoice, result)
 {
     switch(result)
     {
-        case -1:
-            return `It's a tie! ${playerChoice} and ${computerChoice}`;
         case 0:
-            return `You win! ${playerChoice} beats ${computerChoice}`;
+            return `It's a tie! ${playerChoice} and ${computerChoice}`;
         case 1:
+            return `You win! ${playerChoice} beats ${computerChoice}`;
+        case -1:
             return `You lose! ${computerChoice} beats ${playerChoice}`;
     }
 }
 
-// game loop
-function game()
-{
-    // total rounds to be played
-    const TOTALROUNDS = 1;
-    // initialize player score, computer score
-    let playerScore = 0;
-    let computerScore = 0;
-    for (let i = 0; i < TOTALROUNDS; i++)
-    {
-        // get player and computer choice
-        let playerChoice = getPlayerChoice();
-        let computerChoice = getComputerChoice();
-        // play a round
-        result = playRound(playerChoice, computerChoice);
-        // alert player of round result
-        alert(describeResult(playerChoice, computerChoice, result));
-        // update scores from round result
-        switch(result)
-        {
-            case -1:
-                break;
-            case 0:
-                playerScore++;
-                break;
-            case 1:
-                computerScore++;
-                break;
-        }
+// add click listener for each button
+const buttonsDiv = document.querySelector('#buttons');
+const buttons = buttonsDiv.querySelectorAll('*');
+buttons.forEach((button) => {
+    button.addEventListener('click', runPlayerSelection);
+});
+
+// play a round using button as player choice
+function runPlayerSelection(e) {
+    // play a round using button click as player choice
+    const playerChoice = this.id;
+    const computerChoice = getComputerChoice()
+    const result = playRound(playerChoice, computerChoice);
+    // show result of round in DOM
+    displayRoundResult(playerChoice, computerChoice, result);
+    // add score to respective index in array
+    const notTie = tallyScore(result, scoreArray);
+    // announce game winner if max score has been reached
+    const gameWinner = notTie ? checkForGameWin(MAXSCORE) : 0;
+    // if game winner is not determined, display result from last round
+    gameWinner ? announceWinner(gameWinner): ' ';    
+}
+
+// tally results in array
+function tallyScore(result) {
+    // return false if tie (0)
+    if (!result) return false;
+    // add 1 to player score if player wins, else add 1 to computer score
+    if (result === 1) {
+        scoreArray[0]++;
+    } else {
+        scoreArray[1]++;
     }
-    // report final scores
-    alert(`Player score: ${playerScore}\nComputer score: ${computerScore}`);
+    return true;
+}
+
+// display round result in DOM
+function displayRoundResult(playerChoice, computerChoice, result) {
+    // change text on page to match description of round result
+    const description = describeRoundResult(playerChoice, computerChoice, result);
+    document.querySelector('#roundResult').textContent = description;
+}
+
+// display game winner
+function announceWinner(gameWinner) {
+    // determine description from winner int
+    const description = (gameWinner === 1) ? 'You win!' : 'You lose!'
+    // change text on page to announce winner
+    document.querySelector('#gameWinner').textContent = description;
+}
+
+// return 1 if player wins, -1 if computer wins, 0 if no winner yet
+function checkForGameWin(maxScore) {
+    if (scoreArray[0] === maxScore) {
+        return 1;
+    }
+    if (scoreArray[1] === maxScore) {
+        return -1
+    }
+    return 0;
 }
