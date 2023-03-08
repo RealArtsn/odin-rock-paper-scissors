@@ -58,11 +58,11 @@ function describeResult(playerChoice, computerChoice, result)
     }
 }
 
-// game loop through 5
+// game loop
 function game()
 {
     // total rounds to be played
-    const TOTALROUNDS = 5;
+    const TOTALROUNDS = 1;
     // initialize player score, computer score
     let playerScore = 0;
     let computerScore = 0;
@@ -91,4 +91,3 @@ function game()
     // report final scores
     alert(`Player score: ${playerScore}\nComputer score: ${computerScore}`);
 }
-game();
