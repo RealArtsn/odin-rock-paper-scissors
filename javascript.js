@@ -1,6 +1,82 @@
 // initialize scores [player, computer]
 const scoreArray = [0,0];
-const MAXSCORE = 5;
+const MAXSCORE = 5; // maximum score
+
+// initialize game on page load
+function init() {
+    // create button to start game
+    startGame();
+}
+
+function startGame() {
+    // reset scores
+    scoreArray[0] = 0;
+    scoreArray[1] = 0;
+
+    // display scores
+    updateDisplayedScores();
+    
+    // get button container
+    const buttonsDiv = document.querySelector('#buttonContainer');
+
+    // remove existing buttons
+    removeAllChildElements(buttonsDiv);
+
+    // reset game winner announcement
+    document.querySelector('#gameWinner').textContent = '';
+
+    // loop and create each button
+    for (const buttonID of ['rock', 'paper', 'scissors']) {
+        // assign button ID and capitalized content
+        const button = document.createElement('button');
+        button.id = buttonID;
+        button.textContent = buttonID.toUpperCase();
+        // add event listener to run selection for rps
+        button.addEventListener('click', runPlayerSelection);
+        // append to div
+        buttonsDiv.append(button);
+    }
+
+    // append div to show in DOM
+    document.querySelector('#buttonContainer').append(buttonsDiv);
+
+    
+};
+
+// end game function, takes winner int
+function gameOver(winner) {
+    // get all existing buttons in container
+    const buttonsContainer = document.querySelector('#buttonContainer');
+
+    // remove all buttons
+    removeAllChildElements(buttonsContainer);
+
+    // announce the winner
+    announceWinner(winner);
+
+    // make play again button
+    const againButton = document.createElement('button');
+    againButton.textContent = 'PLAY AGAIN';
+    againButton.addEventListener('click', startGame);
+    buttonsContainer.append(againButton);
+}
+
+// remove all child elements of given container
+function removeAllChildElements(container) {
+    const allButtons = container.querySelectorAll('*');
+    // remove each element
+    allButtons.forEach((element) => {
+        element.remove();
+    })
+}
+
+// update scores on UI
+function updateDisplayedScores() {
+    // display player score
+    document.querySelector('#playerScore').textContent = `PLAYER SCORE: ${scoreArray[0]}`;
+    // display computer score
+    document.querySelector('#computerScore').textContent = `COMPUTER SCORE: ${scoreArray[1]}`;
+}
 
 // randomly return rock, paper, or scissors
 function getComputerChoice() 
@@ -49,12 +125,7 @@ function describeRoundResult(playerChoice, computerChoice, result)
     }
 }
 
-// add click listener for each button
-const buttonsDiv = document.querySelector('#buttons');
-const buttons = buttonsDiv.querySelectorAll('*');
-buttons.forEach((button) => {
-    button.addEventListener('click', runPlayerSelection);
-});
+
 
 // play a round using button as player choice
 function runPlayerSelection(e) {
@@ -66,10 +137,14 @@ function runPlayerSelection(e) {
     displayRoundResult(playerChoice, computerChoice, result);
     // add score to respective index in array
     const notTie = tallyScore(result, scoreArray);
+    // display score
+    updateDisplayedScores();
     // announce game winner if max score has been reached
     const gameWinner = notTie ? checkForGameWin(MAXSCORE) : 0;
     // if game winner is not determined, display result from last round
-    gameWinner ? announceWinner(gameWinner): ' ';    
+    if (gameWinner) {
+        gameOver(gameWinner)   
+    }
 }
 
 // tally results in array
@@ -110,3 +185,7 @@ function checkForGameWin(maxScore) {
     }
     return 0;
 }
+
+
+
+init()
