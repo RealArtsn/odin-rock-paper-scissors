@@ -73,9 +73,9 @@ function removeAllChildElements(container) {
 // update scores on UI
 function updateDisplayedScores() {
     // display player score
-    document.querySelector('#playerScore').textContent = `PLAYER SCORE: ${scoreArray[0]}`;
+    document.querySelector('#playerScore').textContent = `${scoreArray[0]}`;
     // display computer score
-    document.querySelector('#computerScore').textContent = `COMPUTER SCORE: ${scoreArray[1]}`;
+    document.querySelector('#computerScore').textContent = `${scoreArray[1]}`;
 }
 
 // randomly return rock, paper, or scissors
