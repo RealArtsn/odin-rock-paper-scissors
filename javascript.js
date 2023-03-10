@@ -30,17 +30,33 @@ function startGame() {
         // assign button ID and capitalized content
         const button = document.createElement('button');
         button.id = buttonID;
-        button.textContent = buttonID.toUpperCase();
+        // button.textContent = buttonID.toUpperCase();
+
+        // add effect for mouse over
+        button.addEventListener('mouseover', function(e) {
+            this.classList.add('cardHover');
+        });
+
+        // button effect for mouse leave
+        button.addEventListener('mouseleave', function(e) {
+            this.classList.remove('cardHover');
+        })
+
+        const img = document.createElement('img');
+        img.src = 'rock.jpg';
+        // prevent image dragging
+        img.ondragstart = () => {return false};
+        button.append(img);
+
+
+        // add card style
+        button.classList.add('card');
+
         // add event listener to run selection for rps
         button.addEventListener('click', runPlayerSelection);
         // append to div
         buttonsDiv.append(button);
-    }
-
-    // append div to show in DOM
-    document.querySelector('#buttonContainer').append(buttonsDiv);
-
-    
+    }    
 };
 
 // end game function, takes winner int
@@ -94,7 +110,7 @@ function playRound(playerChoice, computerChoice)
     // tie
     if (playerChoice === computerChoice)
     {
-        return -1
+        return 0;
     }
     // find winner
     if (computerChoice === 'rock')
@@ -129,6 +145,13 @@ function describeRoundResult(playerChoice, computerChoice, result)
 
 // play a round using button as player choice
 function runPlayerSelection(e) {
+
+    // play card
+    const card = this;
+    card.classList.add('played');
+
+    //play computer card
+
     // play a round using button click as player choice
     const playerChoice = this.id;
     const computerChoice = getComputerChoice()
@@ -185,6 +208,7 @@ function checkForGameWin(maxScore) {
     }
     return 0;
 }
+
 
 
 
