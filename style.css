@@ -5,6 +5,7 @@ body {
     margin: 0;
     padding:10px;
     background-color:rgb(50, 50, 50);
+    height:100%;
 }
 
 h1 {
@@ -40,24 +41,38 @@ h1 {
 }
 
 #playArea {
+    display: flex;
+    justify-content:center;
     height: 200px;
     width: 100%;
 }
 
-#buttonContainer {
+#cardContainers {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:60%;
+}
+
+.cardContainer {
     display:flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    width:100%;
+    margin-bottom:15%;
+
 }
 
 .card {
-    /* height:400px; */
-    width:25%;
-    max-width:300px;
+    width:20%;
+    aspect-ratio: 5/7;
+    max-width:150px;
     margin: 2%;
     transition:0.2s;
-    /* playing card dimensions */
-    aspect-ratio: 5/7;
+    background-color: cornsilk;
+    padding:2%;
+    border-radius: 5%;
 }
 
 .cardHover {
@@ -66,6 +81,16 @@ h1 {
 
 .played {
     margin-top: -20%;
+}
+
+.cardTransparent {
+    opacity:0;
+    transition:5s;
+    margin-top: -15%;
+}
+
+.cardFlipped {
+    transform:rotate(180deg);
 }
 
 img {

@@ -1,10 +1,10 @@
 // initialize scores [player, computer]
-const scoreArray = [0,0];
+const scoreArray = [0, 0];
 const MAXSCORE = 5; // maximum score
 
 // initialize game on page load
 function init() {
-    // create button to start game
+    // start game
     startGame();
 }
 
@@ -15,49 +15,63 @@ function startGame() {
 
     // display scores
     updateDisplayedScores();
-    
+
     // get button container
     const buttonsDiv = document.querySelector('#buttonContainer');
 
-    // remove existing buttons
+    // clear old stuff
     removeAllChildElements(buttonsDiv);
+    removeAllChildElements(document.querySelector('#playArea'));
+
 
     // reset game winner announcement
     document.querySelector('#gameWinner').textContent = '';
 
     // loop and create each button
     for (const buttonID of ['rock', 'paper', 'scissors']) {
-        // assign button ID and capitalized content
-        const button = document.createElement('button');
-        button.id = buttonID;
-        // button.textContent = buttonID.toUpperCase();
-
-        // add effect for mouse over
-        button.addEventListener('mouseover', function(e) {
-            this.classList.add('cardHover');
-        });
-
-        // button effect for mouse leave
-        button.addEventListener('mouseleave', function(e) {
-            this.classList.remove('cardHover');
-        })
-
-        const img = document.createElement('img');
-        img.src = 'rock.jpg';
-        // prevent image dragging
-        img.ondragstart = () => {return false};
-        button.append(img);
-
-
-        // add card style
-        button.classList.add('card');
-
+        const button = createCard(buttonID, true);
         // add event listener to run selection for rps
         button.addEventListener('click', runPlayerSelection);
         // append to div
         buttonsDiv.append(button);
-    }    
+    }
 };
+
+// create a card, optional mouseover effects for player cards
+function createCard(rps, playerCard = false) {
+    // assign button ID and capitalized content
+    const card = document.createElement('div');
+    card.id = rps;
+    
+    // place image on card
+
+    const img = document.createElement('img');
+    img.src = `${card.id}.jpg`;
+    // prevent image dragging
+    img.ondragstart = () => { return false };
+    card.append(img);
+
+    // add card style
+    card.classList.add('card');
+
+    // add mouseover effects if player card
+    if (playerCard) {
+        // add effect for mouse over
+        card.addEventListener('mouseover', handleCardHover);
+
+        // button effect for mouse leave
+        card.addEventListener('mouseleave', function (e) {
+            this.classList.remove('cardHover');
+        })
+    } else {
+        card.classList.add('cardFlipped');
+    }
+    return card;
+}
+
+function handleCardHover() {
+    this.classList.add('cardHover');
+}
 
 // end game function, takes winner int
 function gameOver(winner) {
@@ -95,8 +109,7 @@ function updateDisplayedScores() {
 }
 
 // randomly return rock, paper, or scissors
-function getComputerChoice() 
-{
+function getComputerChoice() {
     let choices = ['rock', 'paper', 'scissors'];
     // random integer between 0 and 3
     let idx = Math.floor(Math.random() * 3);
@@ -105,33 +118,26 @@ function getComputerChoice()
 
 
 // return 0 if player wins, 1 if computer wins, -1 if tie
-function playRound(playerChoice, computerChoice)
-{
+function playRound(playerChoice, computerChoice) {
     // tie
-    if (playerChoice === computerChoice)
-    {
+    if (playerChoice === computerChoice) {
         return 0;
     }
     // find winner
-    if (computerChoice === 'rock')
-    {
+    if (computerChoice === 'rock') {
         return (playerChoice === 'paper') ? 1 : -1;
     }
-    if (computerChoice === 'paper')
-    {
+    if (computerChoice === 'paper') {
         return (playerChoice === 'scissors') ? 1 : -1;
     }
-    if (computerChoice === 'scissors')
-    {
+    if (computerChoice === 'scissors') {
         return (playerChoice === 'rock') ? 1 : -1;
     }
 }
 
 // Return string describing outcome from result integer input
-function describeRoundResult(playerChoice, computerChoice, result)
-{
-    switch(result)
-    {
+function describeRoundResult(playerChoice, computerChoice, result) {
+    switch (result) {
         case 0:
             return `It's a tie! ${playerChoice} and ${computerChoice}`;
         case 1:
@@ -155,19 +161,39 @@ function runPlayerSelection(e) {
     // play a round using button click as player choice
     const playerChoice = this.id;
     const computerChoice = getComputerChoice()
+
+    // show computer card
+    const computerCard = createCard(computerChoice);
+    computerCard.classList.add('cardTransparent');
+    document.querySelector('#playArea').append(computerCard);
+    compareCards(computerCard);
+
     const result = playRound(playerChoice, computerChoice);
     // show result of round in DOM
-    displayRoundResult(playerChoice, computerChoice, result);
+    // displayRoundResult(playerChoice, computerChoice, result);
     // add score to respective index in array
     const notTie = tallyScore(result, scoreArray);
     // display score
     updateDisplayedScores();
+
     // announce game winner if max score has been reached
     const gameWinner = notTie ? checkForGameWin(MAXSCORE) : 0;
     // if game winner is not determined, display result from last round
     if (gameWinner) {
-        gameOver(gameWinner)   
+        gameOver(gameWinner)
     }
+}
+
+// stop game and compare player and computer cards
+function compareCards(computerCard) {
+    const allPlayerCards = document.querySelectorAll('#buttonContainer .card');
+    allPlayerCards.forEach((card) => {
+        card.removeEventListener('click', runPlayerSelection);
+        card.removeEventListener('mouseover', handleCardHover);
+    });
+    setTimeout(() => {
+        computerCard.classList.remove('cardTransparent');
+    }, 500);
 }
 
 // tally results in array
